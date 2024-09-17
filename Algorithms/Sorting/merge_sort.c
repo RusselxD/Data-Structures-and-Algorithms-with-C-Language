@@ -2,6 +2,7 @@
 
 void print(int[], int);
 void mrgsort(int[], int);
+void merge(int[], int[], int, int[], int);
 
 int main()
 {
@@ -14,9 +15,7 @@ int main()
      printf("Original array:\n\t");
      print(arr, len);
 
-     bblsort(arr, len);
-     // slctsort(arr, len);
-     // insrtsort(arr, len);
+     mrgsort(arr, len);
 
      printf("Sorted array:\n\t");
      print(arr, len);
@@ -24,9 +23,10 @@ int main()
      return 0;
 }
 
-void mrgsort(int arr[], int len){
-
-     if(len <= 1) return;
+void mrgsort(int arr[], int len)
+{
+     if (len <= 1)
+          return;
 
      int mid = len / 2;
 
@@ -34,20 +34,48 @@ void mrgsort(int arr[], int len){
      int right_arr[len - mid];
 
      // populate the left and right array
-     for(int i = 0; i < len; i++){
-          if(i < mid){
+     for (int i = 0; i < len; i++)
+     {
+          if (i < mid)
+          {
                left_arr[i] = arr[i];
-          } else {
+          }
+          else
+          {
                right_arr[i - mid] = arr[i];
           }
      }
 
-     int left_len = sizeof(left_arr) / sizeof(left_arr[0]);
-     int right_len = sizeoof(right_arr) / sizeof(right_arr[0]);
+     mrgsort(left_arr, mid);
+     mrgsort(right_arr, len - mid);
 
-     mrgsort(left_arr, left_len);
-     mrgsort(right_arr, right_len);
+     merge(arr, left_arr, mid, right_arr, len - mid);
+}
 
+void merge(int arr[], int left_arr[], int left_len, int right_arr[], int right_len)
+{
+     int i = 0, l = 0, r = 0;
+
+     while (l < left_len && r < right_len)
+     {
+          if (left_arr[l] < right_arr[r])
+          {
+               arr[i++] = left_arr[l++];
+          }
+          else
+          {
+               arr[i++] = right_arr[r++];
+          }
+     }
+
+     while (l < left_len)
+     {
+          arr[i++] = left_arr[l++];
+     }
+
+     while(r < right_len){
+          arr[i++] = right_arr[r++];
+     }
 }
 
 void print(int arr[], int len)
