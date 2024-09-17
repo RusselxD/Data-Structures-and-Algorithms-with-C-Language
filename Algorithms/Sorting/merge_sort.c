@@ -46,12 +46,14 @@ void mrgsort(int arr[], int len)
           }
      }
 
+     // recursive call
      mrgsort(left_arr, mid);
      mrgsort(right_arr, len - mid);
 
      merge(arr, left_arr, mid, right_arr, len - mid);
 }
 
+// merge the contents of left and right array into the original array
 void merge(int arr[], int left_arr[], int left_len, int right_arr[], int right_len)
 {
      int i = 0, l = 0, r = 0;
@@ -73,7 +75,8 @@ void merge(int arr[], int left_arr[], int left_len, int right_arr[], int right_l
           arr[i++] = left_arr[l++];
      }
 
-     while(r < right_len){
+     while (r < right_len)
+     {
           arr[i++] = right_arr[r++];
      }
 }
