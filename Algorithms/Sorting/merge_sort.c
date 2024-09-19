@@ -8,6 +8,7 @@ int main()
 {
      // for testing an empty array
      // int *arr = NULL;
+     // int len = 0;
 
      int arr[] = {5, 3, 8, 6, 2, 1, 9, 4, 7};
      int len = sizeof(arr) / sizeof(arr[0]);

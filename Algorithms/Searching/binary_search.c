@@ -43,7 +43,7 @@ int binary(int arr[], int len, int trgt)
                left = mid + 1;
           }
           else
-          { 
+          {
                // element found
                return mid;
           }
