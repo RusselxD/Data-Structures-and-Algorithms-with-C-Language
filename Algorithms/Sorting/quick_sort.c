@@ -40,7 +40,6 @@ void qcksort(int arr[], int start, int end)
 int partition(int arr[], int start, int end)
 {
      int pivot = arr[end];
-
      int i = start - 1;
 
      for (int j = start; j < end; j++)
