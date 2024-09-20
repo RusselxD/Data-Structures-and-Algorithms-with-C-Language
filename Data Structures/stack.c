@@ -10,8 +10,8 @@ typedef struct
 
 Stack *create_stack();
 void push(Stack *, int);
-int pop(Stack*);
-void free_memory(Stack*);
+int pop(Stack *);
+void free_memory(Stack *);
 void print_error(char[]);
 
 int main()
@@ -72,9 +72,18 @@ int pop(Stack *stack)
 
      // shrink if top is smaller than capacity / 3
 
-     
      return top_data;
+}
 
+int peek(Stack *stack)
+{
+     if (stack->top < 0)
+     {
+          print_error("Error: Stack is empty.\n");
+          free_memory(stack);
+          exit(0);
+     }
+     return stack->data[stack->top];
 }
 
 void free_memory(Stack *stack)
