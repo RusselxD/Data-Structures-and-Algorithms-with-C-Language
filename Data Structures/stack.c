@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -11,6 +12,8 @@ typedef struct
 Stack *create_stack();
 void push(Stack *, int);
 int pop(Stack *);
+void grow(Stack *);
+void shrink(Stack *);
 void free_memory(Stack *);
 void print_error(char[]);
 
@@ -51,9 +54,7 @@ void push(Stack *stack, int data)
      stack->top++;
 
      if (stack->top >= stack->capacity)
-     {
-          // grow
-     }
+          grow(stack);
 
      stack->data[stack->top] = data;
 }
@@ -70,7 +71,10 @@ int pop(Stack *stack)
      int top_data = stack->data[stack->top];
      stack->top--;
 
-     // shrink if top is smaller than capacity / 3
+     bool few_elements_left = stack->top <= stack->capacity / 3;
+
+     if (stack->capacity > 10 && few_elements_left)
+          shrink(stack);
 
      return top_data;
 }
@@ -84,6 +88,36 @@ int peek(Stack *stack)
           exit(0);
      }
      return stack->data[stack->top];
+}
+
+void grow(Stack *stack)
+{
+     int new_capacity = stack->capacity * 2;
+
+     int *new_data = (int *)realloc(stack->data, new_capacity * sizeof(int));
+     if (new_data == NULL)
+     {
+          print_error("Error: Failed to reallocate memory to increase capacity.");
+          return;
+     }
+
+     stack->capacity = new_capacity;
+     stack->data = new_data;
+}
+
+void shrink(Stack *stack)
+{
+     int new_capacity = stack->capacity / 2;
+
+     int *new_data = (int *)realloc(stack->data, new_capacity * sizeof(int));
+     if (new_data == NULL)
+     {
+          print_error("Error: Failed to reallocate memory to decrease capacity.");
+          return;
+     }
+
+     stack->capacity = new_capacity;
+     stack->data = new_data;
 }
 
 void free_memory(Stack *stack)
