@@ -14,12 +14,33 @@ void push(Stack *, int);
 int pop(Stack *);
 void grow(Stack *);
 void shrink(Stack *);
+void print(Stack *);
 void free_memory(Stack *);
 void print_error(char[]);
 
 int main()
 {
      Stack *stack = create_stack();
+
+     push(stack, 1);
+     push(stack, 2);
+     push(stack, 3);
+     push(stack, 4);
+     push(stack, 5);
+     push(stack, 6);
+     push(stack, 7);
+     push(stack, 8);
+     push(stack, 9);
+
+     print(stack);
+
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+
+     print(stack);
 
      return 0;
 }
@@ -118,6 +139,19 @@ void shrink(Stack *stack)
 
      stack->capacity = new_capacity;
      stack->data = new_data;
+}
+
+void print(Stack *stack)
+{
+     if (stack->top < 0)
+          printf("[]\n");
+
+     printf("[");
+     for (int i = 0; i < stack->top; i++)
+     {
+          printf("%d, ", stack->data[i]);
+     }
+     printf("%d]\n", stack->data[stack->top]);
 }
 
 void free_memory(Stack *stack)
