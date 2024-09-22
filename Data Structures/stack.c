@@ -72,9 +72,9 @@ void push(Stack *stack, int data)
 {
      bool can_push_element = true;
 
+     // grow the stack capacity to accomodate additional elements
      if (stack->top == stack->capacity - 1)
-     { // need to grow to accomodate additional elements
-
+     {
           can_push_element = grow(stack);
      }
 
