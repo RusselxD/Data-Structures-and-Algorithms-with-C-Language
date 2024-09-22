@@ -12,7 +12,9 @@ typedef struct
 Stack *create_stack();
 void push(Stack *, int);
 int pop(Stack *);
-void grow(Stack *);
+int peek(Stack *);
+bool is_empty(Stack *);
+bool grow(Stack *);
 void shrink(Stack *);
 void print(Stack *);
 void free_memory(Stack *);
@@ -21,6 +23,10 @@ void print_error(char[]);
 int main()
 {
      Stack *stack = create_stack();
+     if (stack == NULL)
+     {
+          exit(1);
+     }
 
      push(stack, 1);
      push(stack, 2);
@@ -39,8 +45,16 @@ int main()
      printf("%d\n", pop(stack));
      printf("%d\n", pop(stack));
      printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
+     printf("%d\n", pop(stack));
 
      print(stack);
+
+     printf("%d\n", pop(stack));
+
+     free_memory(stack);
 
      return 0;
 }
@@ -48,51 +62,41 @@ int main()
 Stack *create_stack()
 {
      Stack *new_stack = (Stack *)malloc(sizeof(Stack));
-     if (new_stack == NULL)
-     {
-          print_error("Error: Memory allocation failed.\n");
-          return NULL;
-     }
-
      new_stack->data = (int *)malloc(10 * sizeof(int));
-     if (new_stack->data == NULL)
-     {
-          print_error("Error: Memory allocation failed.\n");
-          free(new_stack);
-          return NULL;
-     }
-
-     // initial capacity
      new_stack->capacity = 10;
-
      new_stack->top = -1;
-
      return new_stack;
 }
 
 void push(Stack *stack, int data)
 {
-     stack->top++;
+     bool can_push_element = true;
 
-     if (stack->top >= stack->capacity)
-          grow(stack);
+     if (stack->top == stack->capacity - 1)
+     { // need to grow to accomodate additional elements
 
-     stack->data[stack->top] = data;
+          can_push_element = grow(stack);
+     }
+
+     if (can_push_element)
+     {
+          stack->top++;
+          stack->data[stack->top] = data;
+     }
 }
 
 int pop(Stack *stack)
 {
-     if (stack->top < 0)
+     if (is_empty(stack))
      {
           print_error("Error: Stack is empty.\n");
-          free_memory(stack);
-          exit(0);
+          return -1; // sentinel value
      }
 
      int top_data = stack->data[stack->top];
      stack->top--;
 
-     bool few_elements_left = stack->top <= stack->capacity / 3;
+     bool few_elements_left = stack->top <= (stack->capacity / 3);
 
      if (stack->capacity > 10 && few_elements_left)
           shrink(stack);
@@ -102,28 +106,35 @@ int pop(Stack *stack)
 
 int peek(Stack *stack)
 {
-     if (stack->top < 0)
+     if (is_empty(stack))
      {
           print_error("Error: Stack is empty.\n");
-          free_memory(stack);
-          exit(0);
+          return -1; // sentinel value
      }
      return stack->data[stack->top];
 }
 
-void grow(Stack *stack)
+bool is_empty(Stack *stack)
+{
+     return stack->top < 0;
+}
+
+bool grow(Stack *stack)
 {
      int new_capacity = stack->capacity * 2;
 
      int *new_data = (int *)realloc(stack->data, new_capacity * sizeof(int));
      if (new_data == NULL)
      {
-          print_error("Error: Failed to reallocate memory to increase capacity.");
-          return;
+          print_error("Error: Memory allocation failed during stack growth.\n");
+          return false;
      }
-
-     stack->capacity = new_capacity;
-     stack->data = new_data;
+     else
+     {
+          stack->capacity = new_capacity;
+          stack->data = new_data;
+          return true;
+     }
 }
 
 void shrink(Stack *stack)
@@ -133,7 +144,7 @@ void shrink(Stack *stack)
      int *new_data = (int *)realloc(stack->data, new_capacity * sizeof(int));
      if (new_data == NULL)
      {
-          print_error("Error: Failed to reallocate memory to decrease capacity.");
+          print_error("Error: Failed to reallocate memory to decrease capacity.\n");
           return;
      }
 
@@ -144,7 +155,10 @@ void shrink(Stack *stack)
 void print(Stack *stack)
 {
      if (stack->top < 0)
+     {
           printf("[]\n");
+          return;
+     }
 
      printf("[");
      for (int i = 0; i < stack->top; i++)
