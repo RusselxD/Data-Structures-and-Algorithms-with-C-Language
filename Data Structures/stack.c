@@ -16,46 +16,40 @@ int peek(Stack *);
 bool is_empty(Stack *);
 bool grow(Stack *);
 void shrink(Stack *);
-void print(Stack *);
-void free_memory(Stack *);
+void print_stack(Stack *);
+void free_stack(Stack *);
 void print_error(char[]);
 
 int main()
 {
      Stack *stack = create_stack();
-     if (stack == NULL)
+
+     printf("Pushed 10 elements: 10, 20, ..., 100\n");
+     for (int i = 10; i <= 100; i += 10)
      {
-          exit(1);
+          push(stack, i);
      }
 
-     push(stack, 1);
-     push(stack, 2);
-     push(stack, 3);
-     push(stack, 4);
-     push(stack, 5);
-     push(stack, 6);
-     push(stack, 7);
-     push(stack, 8);
-     push(stack, 9);
+     printf("Current stack content: \n\t");
+     print_stack(stack);
 
-     print(stack);
+     printf("Top element (peeked): %d\n\n", peek(stack));
 
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
-     printf("%d\n", pop(stack));
+     printf("Popped: %d\n", pop(stack));
+     printf("Popped: %d\n", pop(stack));
+     printf("Popped: %d\n", pop(stack));
+     printf("Popped: %d\n", pop(stack));
+     printf("Popped: %d\n\n", pop(stack));
 
-     print(stack);
+     printf("Current stack content: \n\t");
+     print_stack(stack);
 
-     printf("%d\n", pop(stack));
+     printf("Top element (peeked): %d\n", peek(stack));
 
-     free_memory(stack);
+     free_stack(stack);
 
+     printf("\nPress ENTER to continue... ");
+     getchar();
      return 0;
 }
 
@@ -96,6 +90,7 @@ int pop(Stack *stack)
      int top_data = stack->data[stack->top];
      stack->top--;
 
+     // shrink the stack if there are less than or equal thirds-of-the-capacity elements left
      bool few_elements_left = stack->top <= (stack->capacity / 3);
 
      if (stack->capacity > 10 && few_elements_left)
@@ -152,7 +147,7 @@ void shrink(Stack *stack)
      stack->data = new_data;
 }
 
-void print(Stack *stack)
+void print_stack(Stack *stack)
 {
      if (stack->top < 0)
      {
@@ -168,7 +163,7 @@ void print(Stack *stack)
      printf("%d]\n", stack->data[stack->top]);
 }
 
-void free_memory(Stack *stack)
+void free_stack(Stack *stack)
 {
      free(stack->data);
      free(stack);
